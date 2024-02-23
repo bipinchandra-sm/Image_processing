@@ -1,0 +1,52 @@
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+img = cv2.imread('hist.jpg', 0)
+
+# 1. Histogram calculation
+# Calculate using OpenCV functions
+hist = cv2.calcHist ([img], [0], None, [256], [0, 256])
+
+# Calculate using numpy functions
+hist, bins = np.histogram (img.ravel (), 256, [0, 256])
+
+# Calculate using numpy functions
+hist = np.bincount (img.ravel (), minlength = 256)
+
+# 2. Draw a histogram
+plt.hist(img.ravel(), 256, [0, 256])
+plt.show()
+
+# or use the histogram result computed earlier
+plt.plot(hist)
+plt.show()
+
+# 3. Histogram equalization
+equ = cv2.equalizeHist(img)
+
+# draw the histogram after equalization
+plt.hist(equ.ravel(), 256, [0, 256])
+plt.show()
+
+
+cv2.imshow('Original Image',img)
+cv2.imshow('Histogram eqalized Image',equ)
+# (this is necessary to avoid Python kernel form crashing) 
+cv2.waitKey(0) 
+  
+# closing all open windows 
+cv2.destroyAllWindows() 
+
+# Adaptive HIst equalization
+img = cv2.imread ('tsukuba.jpg', 0)
+equ = cv2.equalizeHist(img) # apply global histogram equalization
+
+clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8)) # Adaptive equalization, optional parameters
+cl1 = clahe.apply(img)
+
+cv2.imshow('Compare',np.hstack((img,equ, cl1))) # display side by side
+cv2.waitKey(0) 
+  
+# closing all open windows 
+cv2.destroyAllWindows()
